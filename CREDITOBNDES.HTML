@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Simulador BNDES</title>
+    <style>
+        :root {
+            --bndes-green: #008542;
+            --bndes-blue: #004b8d;
+            --whatsapp-green: #25D366;
+            --text-gray: #555;
+            --border-color: #d1d5db;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header Institucional */
+        header {
+            background-color: var(--bndes-green);
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .logo-area {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-area img {
+            max-height: 30px;
+            width: auto;
+            display: block;
+            filter: brightness(0) invert(1); 
+            object-fit: contain;
+        }
+
+        .canal-mpme {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Container Principal */
+        .main-content {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 70px 15px 10px 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: var(--bndes-blue);
+            font-size: 1.15rem;
+            margin-bottom: 35px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Cards de Opção */
+        .card {
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            padding: 22px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            .card:hover {
+                border-color: var(--bndes-blue);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+        }
+
+        .card.selected {
+            border-color: var(--bndes-blue);
+            background-color: #f0f7ff;
+            border-width: 2px;
+        }
+
+        .radio-circle {
+            min-width: 22px;
+            height: 22px;
+            border: 1.5px solid #888;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .card.selected .radio-circle {
+            border-color: var(--bndes-blue);
+        }
+
+        .radio-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--bndes-blue);
+            border-radius: 50%;
+            display: none;
+        }
+
+        .card.selected .radio-dot {
+            display: block;
+        }
+
+        .icon-svg {
+            width: 60px;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Estilo para as novas imagens de ícone */
+        .icon-svg img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .info .title {
+            color: var(--bndes-blue);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1.1rem;
+        }
+
+        .info .subtitle {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Área do Botão WhatsApp */
+        #whatsapp-section {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+            padding-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            color: white;
+            text-decoration: none;
+            padding: 18px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.98);
+        }
+
+        .btn-whatsapp svg {
+            margin-right: 12px;
+            width: 26px;
+            height: 26px;
+            fill: white;
+        }
+
+        .continue-text {
+            color: var(--text-gray);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Footer Institucional */
+        footer {
+            background-color: var(--bndes-green);
+            border-top: 4px solid var(--bndes-green);
+            padding: 30px 15px;
+            color: var(--border-color);
+            font-size: 0.8rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .footer-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-info {
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .footer-copy {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="Logo_do_BNDES.svg.png" alt="Logo BNDES">
+        </div>
+        <div class="canal-mpme">CANAL MPME</div>
+    </header>
+
+    <div class="main-content">
+        <h2>Escolha o tipo de crédito que deseja simular:</h2>
+
+        <div class="card" onclick="select(this, 'Crédito Produtor Rural')">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="icon-svg">
+                <img src="trator.png" alt="Ícone Rural">
+            </div>
+            <div class="info">
+                <span class="title">Crédito Produtor Rural</span>
+                <span class="subtitle">Financie a sua atividade no campo</span>
+            </div>
+        </div>
+
+        <div class="card" onclick="select(this, 'Crédito Empresarial')">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="icon-svg">
+                <img src="companhia.png" alt="Ícone Empresarial">
+            </div>
+            <div class="info">
+                <span class="title">Crédito Empresarial</span>
+                <span class="subtitle">Para o seu negócio e investimentos</span>
+            </div>
+        </div>
+
+        <div class="card" onclick="select(this, 'Crédito Pessoal')">
+            <div class="radio-circle"><div class="radio-dot"></div></div>
+            <div class="icon-svg">
+                <img src="carteira.png" alt="Ícone Pessoal">
+            </div>
+            <div class="info">
+                <span class="title">Crédito Pessoal</span>
+                <span class="subtitle">Empréstimo para uso pessoal</span>
+            </div>
+        </div>
+
+        <div id="whatsapp-section">
+            <span class="continue-text">Pronto! Agora fale com um de nossos especialistas:</span>
+            <a id="whatsapp-link" href="#" target="_blank" class="btn-whatsapp">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <g id="WA_Logo">
+                        <path d="M20.463,3.488C18.217,1.24,15.231,0.001,12.05,0 C5.495,0,0.16,5.334,0.157,11.892c-0.001,2.096,0.547,4.142,1.588,5.946L0.057,24l6.304-1.654 c1.737,0.948,3.693,1.447,5.683,1.448h0.005c6.554,0,11.89-5.335,11.893-11.893C23.944,8.724,22.708,5.735,20.463,3.488z M12.05,21.785h-0.004c-1.774,0-3.513-0.477-5.031-1.378l-0.361-0.214l-3.741,0.981l0.999-3.648l-0.235-0.374 c-0.99-1.574-1.512-3.393-1.511-5.26c0.002-5.45,4.437-9.884,9.889-9.884c2.64,0,5.122,1.03,6.988,2.898 c1.866,1.869,2.893,4.352,2.892,6.993C21.932,17.351,17.498,21.785,12.05,21.785z M17.472,14.382 c-0.297-0.149-1.758-0.868-2.031-0.967c-0.272-0.099-0.47-0.149-0.669,0.148s-0.767,0.967-0.941,1.166 c-0.173,0.198-0.347,0.223-0.644,0.074c-0.297-0.149-1.255-0.462-2.39-1.475c-0.883-0.788-1.48-1.761-1.653-2.059 s-0.018-0.458,0.13-0.606c0.134-0.133,0.297-0.347,0.446-0.521C9.87,9.97,9.919,9.846,10.019,9.647 c0.099-0.198,0.05-0.372-0.025-0.521C9.919,8.978,9.325,7.515,9.078,6.92c-0.241-0.58-0.486-0.501-0.669-0.51 C8.236,6.401,8.038,6.4,7.839,6.4c-0.198,0-0.52,0.074-0.792,0.372c-0.272,0.298-1.04,1.017-1.04,2.479 c0,1.463,1.065,2.876,1.213,3.074c0.148,0.198,2.095,3.2,5.076,4.487c0.709,0.306,1.263,0.489,1.694,0.626 c0.712,0.226,1.36,0.194,1.872,0.118c0.571-0.085,1.758-0.719,2.006-1.413c0.248-0.694,0.248-1.29,0.173-1.413 C17.967,14.605,17.769,14.531,17.472,14.382z"/>
+                    </g>
+                </svg>
+                Iniciar atendimento especializado
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                Banco Nacional de Desenvolvimento Econômico e Social - BNDES<br>
+                CNPJ: 33.657.248/0001-89<br>
+               Av. República do Chile, 100 - Centro, Rio de Janeiro - RJ, 20013-900
+            </div>
+            <div class="footer-copy">
+                © 2026 • Simulador MPME • Ambiente de Simulação
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function select(el, optionName) {
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.remove('selected');
+            });
+            
+            el.classList.add('selected');
+
+            const numeroTelefone = "5521971800712"; 
+            const saudacao = "Olá! Gostaria de uma simulação.";
+            const mensagem = `${saudacao} Tenho interesse no: *${optionName}*`;
+            const linkWhatsapp = `https://wa.me/${numeroTelefone}?text=${encodeURIComponent(mensagem)}`;
+
+            const waSection = document.getElementById('whatsapp-section');
+            const waLink = document.getElementById('whatsapp-link');
+            
+            waLink.href = linkWhatsapp;
+            waSection.style.display = 'block';
+
+            setTimeout(() => {
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
